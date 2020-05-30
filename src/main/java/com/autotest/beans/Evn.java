@@ -26,10 +26,6 @@ public class Evn {
 	@ExcelProperty("db_password")
 	private String dbPassword;
 	
-	@ExcelProperty("is_seleced")
-	private String isSeleced;
-	
-	
 	public static void main(String[] args) {
 		
 	}
