@@ -27,6 +27,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
 import com.autotest.beans.HttpClientResult;
+import com.autotest.beans.TestCase;
 
 
 
@@ -344,6 +345,13 @@ public class HttpClientUtils {
 		}
 	}
 	
+	public static String sendRequest(TestCase t) {
+		
+		
+		return "";
+	}
+	
+
 	
 	public static void main(String[] args) {
 		try {
@@ -354,4 +362,5 @@ public class HttpClientUtils {
 			e.printStackTrace();
 		}
 	}
+
 }
