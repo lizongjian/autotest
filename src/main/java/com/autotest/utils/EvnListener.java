@@ -22,8 +22,8 @@ public class EvnListener extends AnalysisEventListener<Evn> {
 
 	public void invoke(Evn data, AnalysisContext context) {
 		// 1.封装
-		evn.setIp("127.0.0.1");
-		evn.setPort("8080");
+		evn.setIp("https://suggest.taobao.com/");
+		evn.setPort("443");
 	}
 
 	public static void main(String[] args) {

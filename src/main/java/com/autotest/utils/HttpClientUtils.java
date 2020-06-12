@@ -26,7 +26,8 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
-import com.autotest.beans.HttpClientResult;
+import com.autotest.beans.Evn;
+import com.autotest.beans.ResponseResult;
 import com.autotest.beans.TestCase;
 
 
@@ -55,7 +56,7 @@ public class HttpClientUtils {
 	 * @return
 	 * @throws Exception
 	 */
-	public static HttpClientResult doGet(String url) throws Exception {
+	public static ResponseResult doGet(String url) throws Exception {
 		return doGet(url, null, null);
 	}
 	
@@ -67,7 +68,7 @@ public class HttpClientUtils {
 	 * @return
 	 * @throws Exception
 	 */
-	public static HttpClientResult doGet(String url, Map<String, String> params) throws Exception {
+	public static ResponseResult doGet(String url, Map<String, String> params) throws Exception {
 		return doGet(url, null, params);
 	}
 
@@ -80,7 +81,7 @@ public class HttpClientUtils {
 	 * @return
 	 * @throws Exception
 	 */
-	public static HttpClientResult doGet(String url, Map<String, String> headers, Map<String, String> params) throws Exception {
+	public static ResponseResult doGet(String url, Map<String, String> params, Map<String, String> headers) throws Exception {
 		// 创建httpClient对象
 		CloseableHttpClient httpClient = HttpClients.createDefault();
 
@@ -112,7 +113,7 @@ public class HttpClientUtils {
 
 		try {
 			// 执行请求并获得响应结果
-			return getHttpClientResult(httpResponse, httpClient, httpGet);
+			return getResponseResult(httpResponse, httpClient, httpGet);
 		} finally {
 			// 释放资源
 			release(httpResponse, httpClient);
@@ -126,7 +127,7 @@ public class HttpClientUtils {
 	 * @return
 	 * @throws Exception
 	 */
-	public static HttpClientResult doPost(String url) throws Exception {
+	public static ResponseResult doPost(String url) throws Exception {
 		return doPost(url, null, null);
 	}
 	
@@ -138,7 +139,7 @@ public class HttpClientUtils {
 	 * @return
 	 * @throws Exception
 	 */
-	public static HttpClientResult doPost(String url, Map<String, String> params) throws Exception {
+	public static ResponseResult doPost(String url, Map<String, String> params) throws Exception {
 		return doPost(url, null, params);
 	}
 
@@ -151,7 +152,7 @@ public class HttpClientUtils {
 	 * @return
 	 * @throws Exception
 	 */
-	public static HttpClientResult doPost(String url, Map<String, String> headers, Map<String, String> params) throws Exception {
+	public static ResponseResult doPost(String url, Map<String, String> headers, Map<String, String> params) throws Exception {
 		// 创建httpClient对象
 		CloseableHttpClient httpClient = HttpClients.createDefault();
 
@@ -182,7 +183,7 @@ public class HttpClientUtils {
 
 		try {
 			// 执行请求并获得响应结果
-			return getHttpClientResult(httpResponse, httpClient, httpPost);
+			return getResponseResult(httpResponse, httpClient, httpPost);
 		} finally {
 			// 释放资源
 			release(httpResponse, httpClient);
@@ -197,7 +198,7 @@ public class HttpClientUtils {
 	 * @return
 	 * @throws Exception
 	 */
-	public static HttpClientResult doPut(String url) throws Exception {
+	public static ResponseResult doPut(String url) throws Exception {
 		return doPut(url);
 	}
 
@@ -209,7 +210,7 @@ public class HttpClientUtils {
 	 * @return
 	 * @throws Exception
 	 */
-	public static HttpClientResult doPut(String url, Map<String, String> params) throws Exception {
+	public static ResponseResult doPut(String url, Map<String, String> params) throws Exception {
 		CloseableHttpClient httpClient = HttpClients.createDefault();
 		HttpPut httpPut = new HttpPut(url);
 		RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(CONNECT_TIMEOUT).setSocketTimeout(SOCKET_TIMEOUT).build();
@@ -220,7 +221,7 @@ public class HttpClientUtils {
 		CloseableHttpResponse httpResponse = null;
 
 		try {
-			return getHttpClientResult(httpResponse, httpClient, httpPut);
+			return getResponseResult(httpResponse, httpClient, httpPut);
 		} finally {
 			release(httpResponse, httpClient);
 		}
@@ -234,7 +235,7 @@ public class HttpClientUtils {
 	 * @return
 	 * @throws Exception
 	 */
-	public static HttpClientResult doDelete(String url) throws Exception {
+	public static ResponseResult doDelete(String url) throws Exception {
 		CloseableHttpClient httpClient = HttpClients.createDefault();
 		HttpDelete httpDelete = new HttpDelete(url);
 		RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(CONNECT_TIMEOUT).setSocketTimeout(SOCKET_TIMEOUT).build();
@@ -242,7 +243,7 @@ public class HttpClientUtils {
 
 		CloseableHttpResponse httpResponse = null;
 		try {
-			return getHttpClientResult(httpResponse, httpClient, httpDelete);
+			return getResponseResult(httpResponse, httpClient, httpDelete);
 		} finally {
 			release(httpResponse, httpClient);
 		}
@@ -256,7 +257,7 @@ public class HttpClientUtils {
 	 * @return
 	 * @throws Exception
 	 */
-	public static HttpClientResult doDelete(String url, Map<String, String> params) throws Exception {
+	public static ResponseResult doDelete(String url, Map<String, String> params) throws Exception {
 		if (params == null) {
 			params = new HashMap<String, String>();
 		}
@@ -312,7 +313,7 @@ public class HttpClientUtils {
 	 * @return
 	 * @throws Exception
 	 */
-	public static HttpClientResult getHttpClientResult(CloseableHttpResponse httpResponse,
+	public static ResponseResult getResponseResult(CloseableHttpResponse httpResponse,
 			CloseableHttpClient httpClient, HttpRequestBase httpMethod) throws Exception {
 		// 执行请求
 		httpResponse = httpClient.execute(httpMethod);
@@ -323,9 +324,9 @@ public class HttpClientUtils {
 			if (httpResponse.getEntity() != null) {
 				content = EntityUtils.toString(httpResponse.getEntity(), ENCODING);
 			}
-			return new HttpClientResult(httpResponse.getStatusLine().getStatusCode(), content);
+			return new ResponseResult(httpResponse.getStatusLine().getStatusCode(), content);
 		}
-		return new HttpClientResult(HttpStatus.SC_INTERNAL_SERVER_ERROR);
+		return new ResponseResult(HttpStatus.SC_INTERNAL_SERVER_ERROR);
 	}
 
 	/**
@@ -345,17 +346,37 @@ public class HttpClientUtils {
 		}
 	}
 	
-	public static String sendRequest(TestCase t) {
+	
+	//统一发送方法，返回日志，用来生成报告
+	public static ResponseResult sendRequest(TestCase t,Evn evn,Map<String,String> context) {
+		ResponseResult result = new ResponseResult();
+		String reqMethod = t.getRequestMethod();
+		Map<String,String> in_parame = t.toMap(t.parse(t.getDefaultParame(), context));
+		Map<String,String> request_header = t.toMap(t.parse(t.getRequestHeader(), context));
+		switch (reqMethod) {
+		case "get":
+			try {
+				result = doGet(evn.getIp()+""+t.getRequestPath(),in_parame,request_header);
+			} catch (Exception e) {
+				e.printStackTrace();
+				result = new ResponseResult(404, e.toString());
+			}
+			break;
+		case "post":
+			
+			break;
+		default:
+			break;
+		}
 		
-		
-		return "";
+		return result;
 	}
 	
 
 	
 	public static void main(String[] args) {
 		try {
-			HttpClientResult h = HttpClientUtils.doGet("http://www.baidu.com");
+			ResponseResult h = HttpClientUtils.doGet("http://www.baidu.com");
 			System.out.println(h);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

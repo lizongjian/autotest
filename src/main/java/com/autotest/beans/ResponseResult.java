@@ -10,7 +10,7 @@ import lombok.experimental.Accessors;
 
 
 @Data
-public class HttpClientResult {
+public class ResponseResult {
 	private static final long serialVersionUID = 2168152194164783950L;
 
 	/**
@@ -25,7 +25,7 @@ public class HttpClientResult {
 	
 	
 	
-	public HttpClientResult(int code, String content) {
+	public ResponseResult(int code, String content) {
 		super();
 		this.code = code;
 		this.content = content;
@@ -33,10 +33,12 @@ public class HttpClientResult {
 
 
 
-	public HttpClientResult(int code) {
+	public ResponseResult(int code) {
 		super();
 		this.code = code;
 	}
 	
-	
+	public ResponseResult() {
+		
+	}
 }
