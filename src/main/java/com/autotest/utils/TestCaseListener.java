@@ -15,8 +15,6 @@ import com.autotest.beans.TestCase;
 
 public class TestCaseListener extends AnalysisEventListener<TestCase>{
 	
-	private static final Logger logger = LoggerFactory.getLogger(TestCaseListener.class);
-	
 	//存储，模块名和用例步骤
 	public static List<Map<String,List<TestCase>>> testCases = new ArrayList<Map<String,List<TestCase>>>();
 	
