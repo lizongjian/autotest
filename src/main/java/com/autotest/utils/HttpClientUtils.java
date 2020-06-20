@@ -28,6 +28,7 @@ import org.apache.http.util.EntityUtils;
 
 import com.autotest.beans.Evn;
 import com.autotest.beans.ResponseResult;
+import com.autotest.common.Parse;
 import com.autotest.beans.InterTestCase;
 import com.autotest.beans.InterTestCaseLog;
 
@@ -352,8 +353,8 @@ public class HttpClientUtils {
 		String reqMethod = t.getRequestMethod();
 		
 		//1.解析json字符串  把json中的$<>变量替换  最后解析成map
-		Map<String,String> request_header = t.toMap(t.parse(t.getRequestHeader(), context));
-		Map<String,String> default_parame = t.toMap(t.parse(t.getDefaultParam(), context));
+		Map<String,String> request_header = t.toMap(Parse.parse(t.getRequestHeader(), context));
+		Map<String,String> default_parame = t.toMap(Parse.parse(t.getDefaultParam(), context));
 		//入参替换 保留 在测试平台的时候 因为接口和用例是分开的
 		//Map<String,String> default_parame = t.toMap(t.parse(t.getDefaultParame(), context));
 		if(request_header!=null) {

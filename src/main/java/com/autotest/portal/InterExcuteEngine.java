@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import com.alibaba.excel.EasyExcel;
 import com.autotest.beans.Evn;
 import com.autotest.beans.ResponseResult;
+import com.autotest.common.Parse;
 import com.autotest.utils.EvnListener;
 import com.autotest.utils.HttpClientUtils;
 import com.autotest.utils.InterTestCaseListener;
@@ -90,7 +91,7 @@ public class InterExcuteEngine {
 					//期望值
 					String expect = JsonPath.read(respResult.getContent(), oc.getKey());
 					//actual
-					String actual = t.parse(oc.getValue(), context);
+					String actual = Parse.parse(oc.getValue(), context);
 					if(expect.equals(actual)) {
 						testCaseLog.setCheck(expect+""+actual);
 						System.out.println("预期"+expect+"----"+"实际"+actual);

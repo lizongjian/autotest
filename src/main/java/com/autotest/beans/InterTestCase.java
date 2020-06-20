@@ -10,6 +10,7 @@ import org.apache.poi.ss.formula.functions.T;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONPath;
+import com.autotest.common.Parse;
 import com.jayway.jsonpath.JsonPath;
 
 import lombok.Data;
@@ -55,25 +56,6 @@ public class InterTestCase {
 	@ExcelProperty("校验")
 	private String outCheck;
 
-	// 解析
-	public String parse(String str, Map<String, String> context) {
-		// $<>
-		if(str != null) {
-			Pattern pattern = Pattern.compile("\\$<(.*?)>");  //+：一次或多次  ？ 一次或一次也没有
-			Matcher matcher = pattern.matcher(str);
-			// 1.先获取$<>的key
-			while (matcher.find()) {
-				String s = matcher.group(0);
-				String s1 = s.substring(2, s.length()-1);
-				String value = context.get(s1);
-				str = str.replaceFirst("\\$<(.*?)>", value);
-			}
-			// 2.从context获取值
-			// 3.正则替换
-		}
-		return str;
-	}
-
 	// json字符串转map<String,String>
 	public Map<String, String> toMap(String str) {
 		Map<String, String> m = new HashMap<String, String>();
@@ -96,8 +78,8 @@ public class InterTestCase {
 		System.out.println(s1);
 		
 		Map<String,String> m = new HashMap<String, String>();
-		m.put("aa", "caonima");
-		m.put("b", "caonibb");
-		System.out.println(t.parse("1212$<aa>$<b>", m));
+		m.put("aa", "aaaa");
+		m.put("b", "bb");
+		System.out.println(Parse.parse("1212$<aa>$<b>", m));
 	}
 }

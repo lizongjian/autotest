@@ -52,8 +52,8 @@ public class UIExcuteEngine {
 			}
 		}
 		//生成测试报告
-		EasyExcel.write(System.getProperty("user.dir")+File.separator+"report"+File.separator+System.currentTimeMillis()+".xlsx", InterTestCaseLog.class).sheet("测试报告").doWrite(uiTestCaseLogsList);
-		System.out.println(System.getProperty("user.dir")+File.separator+"report"+File.separator+System.currentTimeMillis()+".xlsx");
+		//EasyExcel.write(System.getProperty("user.dir")+File.separator+"report"+File.separator+System.currentTimeMillis()+".xlsx", InterTestCaseLog.class).sheet("测试报告").doWrite(uiTestCaseLogsList);
+		//System.out.println(System.getProperty("user.dir")+File.separator+"report"+File.separator+System.currentTimeMillis()+".xlsx");
 	}
 
 	// 执行一个模块/用例
@@ -63,12 +63,18 @@ public class UIExcuteEngine {
 		Map<String, String> context = new HashMap<String, String>();
 		
 		//步骤
-		for(int i=0;i<=testCase.size()-2;i++) {
+		for(int i=0;i<=testCase.size()-1;i++) {
 			UITestCaseLog uiTestCaseLog = new UITestCaseLog();
 			UITestCase uiTestCase = testCase.get(i);
-			SeleniumUtils.execute(uiTestCase, evn, objectLibs, context, uiTestCaseLog);
+			//返回值说明 执行正常 则返回有输出变量的map  执行异常 则返回 error+错误信息
+			Map<String,String> result = SeleniumUtils.execute(uiTestCase, evn, objectLibs, context, uiTestCaseLog);
+			if(!result.isEmpty()) {
+				context.put(uiTestCase.getOutParam(), result.get(uiTestCase.getOutParam()));
+			}
 			uiTestCaseLogsList.add(uiTestCaseLog);
 		}
+		context.clear();
+		SeleniumUtils.closeDriver();
 	}
 
 	public static void main(String[] args) {
