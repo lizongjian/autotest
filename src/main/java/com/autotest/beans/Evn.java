@@ -8,23 +8,29 @@ import lombok.Data;
 @Data // 注在类上，提供类的get、set、equals、hashCode、canEqual、toString方法
 public class Evn {
 
-	@ExcelProperty("ip")
+	@ExcelProperty("域名")
 	private String ip;
 	
-	@ExcelProperty("port")
+	@ExcelProperty("端口")
 	private String port;
 	
-	@ExcelProperty("db_type")
+	@ExcelProperty("数据库类型")
 	private String dbType;
 	
-	@ExcelProperty("db_url")
-	private String dbUrl;
+	@ExcelProperty("数据库端口")
+	private String dbPort;
 	
-	@ExcelProperty("db_user")
+	@ExcelProperty("数据库用户")
 	private String dbUser;
 	
-	@ExcelProperty("db_password")
+	@ExcelProperty("数据库密码")
 	private String dbPassword;
+	
+	@ExcelProperty("数据库名称")
+	private String dbName;
+	
+	@ExcelProperty("是否选用")
+	private String isSelected;
 	
 	public static void main(String[] args) {
 		

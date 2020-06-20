@@ -7,7 +7,7 @@ import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.event.AnalysisEventListener;
 import com.autotest.beans.Evn;
-import com.autotest.beans.TestCase;
+import com.autotest.beans.InterTestCase;
 
 public class EvnListener extends AnalysisEventListener<Evn> {
 
@@ -20,13 +20,10 @@ public class EvnListener extends AnalysisEventListener<Evn> {
 		// 3.回写测试报告
 	}
 
-	public void invoke(Evn data, AnalysisContext context) {
-		// 1.封装
-		evn.setIp("https://suggest.taobao.com/");
-		evn.setPort("443");
+	public void invoke(Evn e, AnalysisContext context) {
+		evn.setIp(e.getIp());
+		evn.setPort(e.getPort());
 	}
 
-	public static void main(String[] args) {
-	}
 
 }
