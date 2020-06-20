@@ -11,19 +11,14 @@ import org.slf4j.LoggerFactory;
 
 import com.alibaba.excel.EasyExcel;
 import com.autotest.beans.Evn;
-import com.autotest.beans.ResponseResult;
 import com.autotest.beans.UITestCase;
 import com.autotest.beans.UITestCaseLog;
 import com.autotest.utils.EvnListener;
-import com.autotest.utils.HttpClientUtils;
-import com.autotest.utils.InterTestCaseListener;
 import com.autotest.utils.ObjectLibListener;
 import com.autotest.utils.SeleniumUtils;
 import com.autotest.utils.UITestCaseListener;
-import com.autotest.beans.InterTestCase;
 import com.autotest.beans.InterTestCaseLog;
 import com.autotest.beans.ObjectLib;
-import com.jayway.jsonpath.JsonPath;
 
 public class UIExcuteEngine {
 	private static final Logger logger = LoggerFactory.getLogger(UIExcuteEngine.class);
@@ -51,6 +46,7 @@ public class UIExcuteEngine {
 		// 3.当前的用例
 		for (int i = 0; i <= uiTestCases.size() - 1; i++) {
 			uiTestCase = uiTestCases.get(i);
+			//4.当前用例的步骤
 			for (Map.Entry<String, List<UITestCase>> entry : uiTestCase.entrySet()) {
 				execute(entry.getValue(),evn,objectLib);
 			}
@@ -60,7 +56,7 @@ public class UIExcuteEngine {
 		System.out.println(System.getProperty("user.dir")+File.separator+"report"+File.separator+System.currentTimeMillis()+".xlsx");
 	}
 
-	// 执行一个模块
+	// 执行一个模块/用例
 	public static void execute(List<UITestCase> testCase,Evn evn,List<Map<String,ObjectLib>> objectLibs) {
 		
 		//保存在一个用例范围内 输出变量
@@ -71,7 +67,6 @@ public class UIExcuteEngine {
 			UITestCaseLog uiTestCaseLog = new UITestCaseLog();
 			UITestCase uiTestCase = testCase.get(i);
 			SeleniumUtils.execute(uiTestCase, evn, objectLibs, context, uiTestCaseLog);
-			
 			uiTestCaseLogsList.add(uiTestCaseLog);
 		}
 	}

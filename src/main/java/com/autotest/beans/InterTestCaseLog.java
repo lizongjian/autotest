@@ -5,8 +5,6 @@ import java.util.List;
 
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.annotation.ExcelProperty;
-import com.alibaba.excel.annotation.write.style.ContentLoopMerge;
-import com.alibaba.excel.write.merge.LoopMergeStrategy;
 
 import lombok.Data;
 
