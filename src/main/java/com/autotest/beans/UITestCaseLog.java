@@ -2,6 +2,9 @@ package com.autotest.beans;
 
 import com.alibaba.excel.annotation.ExcelProperty;
 
+import lombok.Data;
+
+@Data
 public class UITestCaseLog {
 	@ExcelProperty("模块名称")
 	private String module;
@@ -20,4 +23,7 @@ public class UITestCaseLog {
 	
 	@ExcelProperty("状态")
 	private String status;
+	
+	@ExcelProperty("状态信息")
+	private String statusMes;
 }

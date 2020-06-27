@@ -91,8 +91,8 @@ public class InterExcuteEngine {
 					//期望值
 					String expect = JsonPath.read(respResult.getContent(), oc.getKey());
 					//actual
-					String actual = Parse.parse(oc.getValue(), context);
-					if(expect.equals(actual)) {
+					Map<String, String> actual = Parse.parse(oc.getValue(), context);
+					if(expect.equals(actual.get("result"))) {
 						testCaseLog.setCheck(expect+""+actual);
 						System.out.println("预期"+expect+"----"+"实际"+actual);
 						testCaseLog.setStatus("success");

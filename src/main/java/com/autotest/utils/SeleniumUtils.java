@@ -1,6 +1,7 @@
 package com.autotest.utils;
 
 import java.io.File;
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +14,8 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import com.autotest.beans.Evn;
 import com.autotest.beans.ObjectLib;
@@ -25,16 +28,12 @@ public class SeleniumUtils {
 	static WebDriver driver = null;
 	static Map<String, String> result = null;
 
-	public static Map<String, String> execute(UITestCase uiTestCase, Evn evn, List<Map<String, ObjectLib>> objectLibs,
+	public static Map<String, String> execute(UITestCase uiTestCase, Evn evn, ObjectLib object,
 			Map<String, String> context, UITestCaseLog uiTestCaseLog) {
 		String keyword = uiTestCase.getKeyword();
-		String inParam = Parse.parse(uiTestCase.getInParam(), context);
+		String inParam = uiTestCase.getInParam();
 		String outParam = uiTestCase.getOutParam();
-		String objectName = uiTestCase.getObject();
-		// 根据对象名称获取对应对象库对象
-		ObjectLib objectLib = ObjectLibUtils.getObjectLib(objectName, objectLibs);
-		// 根据对象获取元素 并解析路径参数 $<>
-		WebElement element = getElement(objectLib, inParam);
+		WebElement element = getElement(object, inParam);
 		switch (keyword) {
 		case "open":
 			result = open(inParam, evn.getIp());
@@ -61,16 +60,14 @@ public class SeleniumUtils {
 	private static Map<String, String> wait(String inParam) {
 		Map<String, String> result = new HashMap<String, String>();
 		try {
-			long time = Long.valueOf(inParam)*1000;
+			long time = Long.valueOf(inParam) * 1000;
 			Thread.sleep(time);
 		} catch (Exception e) {
 			e.printStackTrace();
-			result.put("error",e.getStackTrace().toString());
+			result.put("error", e.getStackTrace().toString());
 		}
 		return result;
 	}
-
-	
 
 	// 通过定位方式和定位值获取对象
 	public static WebElement getElement(ObjectLib o, String inParam) {
@@ -79,9 +76,14 @@ public class SeleniumUtils {
 			String locateType = o.getLocateType();
 			// 解析
 			String locateValue = Parse.parse(o.getLocateValue(), inParam);
+			// 显示等待，元素存在 则返回 4.0 新的 旧的两个参数的过期了
+			// WebDriverWait wait =new WebDriverWait(driver, 20) @Deprecated
+			// Duration 时间间隔
+			WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
 			switch (locateType) {
 			case "xpath":
 				try {
+					wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(locateValue)));
 					element = driver.findElement(By.xpath(locateValue));
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -90,7 +92,17 @@ public class SeleniumUtils {
 				break;
 			case "id":
 				try {
+					wait.until(ExpectedConditions.presenceOfElementLocated(By.id(locateValue)));
 					element = driver.findElement(By.id(locateValue));
+				} catch (Exception e) {
+					e.printStackTrace();
+					result.put("error", e.getStackTrace().toString());
+				}
+				break;
+			case "css":
+				try {
+					wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(locateValue)));
+					element = driver.findElement(By.cssSelector(locateValue));
 				} catch (Exception e) {
 					e.printStackTrace();
 					result.put("error", e.getStackTrace().toString());
@@ -112,8 +124,8 @@ public class SeleniumUtils {
 				System.setProperty("webdriver.chrome.driver", System.getProperty("user.dir") + File.separator + "driver"
 						+ File.separator + "chromedriver.exe");
 				driver = new ChromeDriver();
-				//隐式等待
-				driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+				// 隐式等待 30s内 找元素的超时时间
+				driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
 				driver.manage().window().maximize();
 				driver.get(url);
 			} catch (Exception e) {
@@ -164,7 +176,6 @@ public class SeleniumUtils {
 	public static Map<String, String> getAttr(WebElement element, String inParam, String outParam) {
 		Map<String, String> result = new HashMap<String, String>();
 		try {
-
 			String value = element.getAttribute(inParam);
 			result.put(outParam, value);
 		} catch (Exception e) {
@@ -173,21 +184,20 @@ public class SeleniumUtils {
 		}
 		return result;
 	}
-	
+
 	public static void closeDriver() {
-		if(driver!=null) {
+		if (driver != null) {
 			driver.quit();
 		}
 	}
-	
+
 	public static void main(String[] args) {
 		String a = Parse.parse("//*[@id=\"$<搜索按钮>\"]", "su");
 		System.out.println(a);
-		
-		Map<String,String> m = null;
+
+		Map<String, String> m = null;
 		m.put("1", "1");
 		System.out.println(m.get(1));
 	}
 
-	
 }
