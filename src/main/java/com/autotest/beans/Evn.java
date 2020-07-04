@@ -7,7 +7,10 @@ import lombok.Data;
 
 @Data // 注在类上，提供类的get、set、equals、hashCode、canEqual、toString方法
 public class Evn {
-
+	
+	@ExcelProperty("环境名称")
+	private String evnName;
+	
 	@ExcelProperty("域名")
 	private String ip;
 	
@@ -29,10 +32,4 @@ public class Evn {
 	@ExcelProperty("数据库名称")
 	private String dbName;
 	
-	@ExcelProperty("是否选用")
-	private String isSelected;
-	
-	public static void main(String[] args) {
-		
-	}
 }

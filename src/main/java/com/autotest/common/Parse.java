@@ -7,7 +7,9 @@ import java.util.regex.Pattern;
 
 public class Parse {
 	
-	// 解析输入变量
+	// 解析输入参数 
+	//没有输入参数：就返回空的map 
+	//有输入参数：正则解析 有匹配 就去context替换 没匹配就直接map返回 result+值
 	public static Map<String, String> parse(String str, Map<String, String> context) {
 		Map<String, String> result = new HashMap<String, String>();
 		// $<>

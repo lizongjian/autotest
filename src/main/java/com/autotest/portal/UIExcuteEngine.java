@@ -36,16 +36,18 @@ public class UIExcuteEngine {
 
 	public static void run() {
 		// 1.读取环境
-		EasyExcel.read("C:\\Users\\zonja\\Desktop\\UI.xlsx", Evn.class, new EvnListener()).sheet("全局配置信息").doRead();
+		EasyExcel.read("F:\\workspace\\autotest\\autotest\\case\\UI.xlsx", Evn.class, new EvnListener()).sheet("全局配置信息").doRead();
 		// 2.读取用例
-		EasyExcel.read("C:\\Users\\zonja\\Desktop\\UI.xlsx", UITestCase.class, new UITestCaseListener()).sheet("测试用例")
+		EasyExcel.read("F:\\workspace\\autotest\\autotest\\case\\UI.xlsx", UITestCase.class, new UITestCaseListener()).sheet("测试用例")
 				.doRead();
 		// 3.读取对象库
-		EasyExcel.read("C:\\Users\\zonja\\Desktop\\UI.xlsx", ObjectLib.class, new ObjectLibListener()).sheet("对象库")
+		EasyExcel.read("F:\\workspace\\autotest\\autotest\\case\\UI.xlsx", ObjectLib.class, new ObjectLibListener()).sheet("对象库")
 				.doRead();
-
+		//环境信息
 		Evn evn = EvnListener.evn;
+		//ui用例
 		List<Map<String, List<UITestCase>>> uiTestCases = UITestCaseListener.uiTestCases;
+		//对象库
 		List<Map<String, ObjectLib>> objectLib = ObjectLibListener.objectLib;
 
 		// 3.遍历所有用例
@@ -60,69 +62,88 @@ public class UIExcuteEngine {
 		// 生成测试报告
 		EasyExcel
 				.write(System.getProperty("user.dir") + File.separator + "report" + File.separator
-						+ System.currentTimeMillis() + ".xlsx", UITestCaseLog.class)
+						+System.currentTimeMillis() + ".xlsx", UITestCaseLog.class)
 				.sheet("测试报告").doWrite(uiTestCaseLogsList);
-		System.out.println(System.getProperty("user.dir") + File.separator + "report" + File.separator
-				+ System.currentTimeMillis() + ".xlsx");
 	}
 
-	// 执行一个模块/用例
-	public static void execute(List<UITestCase> testCase, Evn evn, List<Map<String, ObjectLib>> objectLibs) {
+	// 执行单个用例
+	public static void execute(List<UITestCase> testCase, Evn evn, List<Map<String, ObjectLib>> objectLib) {
 
 		// 保存在一个用例范围内 输出变量
 		Map<String, String> context = new HashMap<String, String>();
 
 		// 步骤:
 		start: for (int i = 0; i <= testCase.size() - 1; i++) {
+			
 			UITestCase uiTestCase = testCase.get(i);
 			UITestCaseLog uiTestCaseLog = new UITestCaseLog();
 			uiTestCaseLog.setModule(uiTestCase.getModule());
 			uiTestCaseLog.setKeyword(uiTestCase.getKeyword());
-			String objectName = uiTestCase.getObject();
-			uiTestCaseLog.setObject(uiTestCase.getObject());
+			String objectName = uiTestCase.getObjectName();
+			uiTestCaseLog.setObject(uiTestCase.getObjectName());
+			
+			// 输入参数解析
+			String inParam = uiTestCase.getInParam();
+			if(null != inParam) {
+				Map<String, String> inmap = Parse.parse(inParam, context);
+				for (Map.Entry<String, String> in : inmap.entrySet()) {
+					String inKey = in.getKey();
+					if ("result".equals(inKey)) {// 解析成功结果集
+						uiTestCase.setInParam(in.getValue());
+						uiTestCaseLog.setInParam(in.getValue());
+					} else if ("error".equals(inKey)) {// 解析失败结果集
+						uiTestCaseLog.setInParam(inParam);
+						uiTestCaseLog.setStatus("fail");
+						uiTestCaseLog.setStatusMes(in.getValue());
+						uiTestCaseLogsList.add(uiTestCaseLog);
+						// 解析输入参数错误就跳出本次的用例执行 执行下一个用例
+						break start;
+					}
+				}
+			}
+			
+			// 对象解析
 			ObjectLib object = null;
-			// 入参解析
-			Map<String, String> inmap = Parse.parse(uiTestCase.getInParam(), context);
-			for (Map.Entry<String, String> in : inmap.entrySet()) {
-				String inKey = in.getKey();
-				if ("result".equals(inKey)) {//解析成功结果集
-					uiTestCase.setInParam(in.getValue());
-					uiTestCaseLog.setInParam(in.getValue());
-				} else if ("error".equals(inKey)) {//解析失败结果集
-					uiTestCaseLog.setInParam(uiTestCase.getInParam());
+			if (null != objectName && null != inParam) {
+				Map<String,Object> result = ObjectLibUtils.getObject(objectName,objectLib,inParam);
+				for (Map.Entry<String,Object> obj : result.entrySet()) {
+					String inKey = obj.getKey();
+					if ("result".equals(inKey)) {// 解析成功结果集
+						object = (ObjectLib) obj.getValue();
+					} else if ("error".equals(inKey)) {// 解析失败结果集
+						uiTestCaseLog.setInParam(inParam);
+						uiTestCaseLog.setObject(objectName);
+						uiTestCaseLog.setStatus("fail");
+						uiTestCaseLog.setStatusMes(obj.getValue().toString());
+						uiTestCaseLogsList.add(uiTestCaseLog);
+						// 解析输入参数错误就跳出本次的用例执行 执行下一个用例
+						break start;
+					}
+				}
+				
+				if (object == null) {
 					uiTestCaseLog.setStatus("fail");
-					uiTestCaseLog.setStatusMes(in.getValue());
+					uiTestCaseLog.setStatusMes("找不到【" + objectName + "】该对象!请检查对象库");
 					uiTestCaseLogsList.add(uiTestCaseLog);
-					// 用例有错误就跳出本次的用例执行 执行下一个用例
+					// 对象找不到 就跳出本次的用例执行 执行下一个用例
 					break start;
 				}
 			}
 			
-			//对象解析 
-			//1.获取对象实例   2.解析对象路径
-			// 根据对象名称获取对应对象库对象
-			if(objectName!=null) {
-				object = ObjectLibUtils.getObjectLib(uiTestCase.getObject(), objectLibs);
-				if(object == null) {
-					uiTestCaseLog.setStatus("fail");
-					uiTestCaseLog.setStatusMes("找不到【"+objectName+"】该对象!请检查对象库");
-					uiTestCaseLogsList.add(uiTestCaseLog);
-					// 用例有一个错误 就跳出本次的用例执行 执行下一个用例
-					break start;
-				}
-			}
-			// 执行
+			// 正式执行
 			Map<String, String> result = SeleniumUtils.execute(uiTestCase, evn, object, context, uiTestCaseLog);
-			if (!result.isEmpty()) {//正常处理解析成功 
+			if (!result.isEmpty()) {// 正常处理解析成功
 				context.put(uiTestCase.getOutParam(), result.get(uiTestCase.getOutParam()));
 				uiTestCaseLog.setOutParam(uiTestCase.getOutParam());
 				uiTestCaseLog.setStatus("success");
-				uiTestCaseLog.setStatusMes(uiTestCase.getOutParam()+"="+result.get(uiTestCase.getOutParam()));
-			} else if (result.isEmpty()) {//不用处理成功
+				uiTestCaseLog.setStatusMes(uiTestCase.getOutParam() + "=" + result.get(uiTestCase.getOutParam()));
+			} else if (result.isEmpty()) {// 不用处理成功
 				uiTestCaseLog.setStatus("success");
-			} else {//处理失败 对象点击失败 
+			} else {// 处理失败 对象点击失败
 				uiTestCaseLog.setStatus("fail");
 				uiTestCaseLog.setStatusMes(result.get("error"));
+				uiTestCaseLogsList.add(uiTestCaseLog);
+				break start;
 			}
 			uiTestCaseLogsList.add(uiTestCaseLog);
 		}
@@ -132,7 +153,5 @@ public class UIExcuteEngine {
 
 	public static void main(String[] args) {
 		UIExcuteEngine.run();
-		// EasyExcel.read("C:\\Users\\zonja\\Desktop\\UI.xlsx", UITestCase.class, new
-		// UITestCaseListener()).sheet();
 	}
 }

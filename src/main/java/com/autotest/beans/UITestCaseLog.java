@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 public class UITestCaseLog {
-	@ExcelProperty("模块名称")
+	@ExcelProperty("用例名称")
 	private String module;
 
 	@ExcelProperty("关键字")

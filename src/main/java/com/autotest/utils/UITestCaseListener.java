@@ -5,21 +5,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
+import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.event.AnalysisEventListener;
+import com.autotest.beans.Evn;
 import com.autotest.beans.UITestCase;
 
 public class UITestCaseListener extends AnalysisEventListener<UITestCase>{
 	
-	//存储，模块名和用例步骤
+	//存储，用例名和用例步骤  多步骤
 	public static List<Map<String,List<UITestCase>>> uiTestCases = new ArrayList<Map<String,List<UITestCase>>>();
-	
-	private String moduleName = "";
-	
 	 
 	public void doAfterAllAnalysed(AnalysisContext arg0) {
-		
+		System.out.println(uiTestCases);
 	}
 
 	public void invoke(UITestCase t, AnalysisContext context) {
@@ -33,7 +31,6 @@ public class UITestCaseListener extends AnalysisEventListener<UITestCase>{
 			m.put(moduleName, l);
 			uiTestCases.add(m);
 		}else {
-			List<UITestCase> ll = new ArrayList<UITestCase>();
 			//在最后一个追加
 			Map<String, List<UITestCase>>  mm = uiTestCases.get(uiTestCases.size()-1);
 			String s ="";
@@ -42,6 +39,14 @@ public class UITestCaseListener extends AnalysisEventListener<UITestCase>{
 			}
 			mm.get(s).add(t);
 		}
+	}
+	
+	
+	public static void main(String[] args) {
+	
+		// 2.读取用例
+		EasyExcel.read("F:\\workspace\\autotest\\autotest\\case\\UI.xlsx", UITestCase.class, new UITestCaseListener()).sheet("测试用例")
+				.doRead();
 	}
 }
 
