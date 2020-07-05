@@ -29,8 +29,8 @@ import org.apache.http.util.EntityUtils;
 import com.autotest.beans.Evn;
 import com.autotest.beans.ResponseResult;
 import com.autotest.common.Parse;
-import com.autotest.beans.InterTestCase;
-import com.autotest.beans.InterTestCaseLog;
+import com.autotest.beans.InterfaceTestCase;
+import com.autotest.beans.InterfaceTestCaseLog;
 
 
 
@@ -348,13 +348,13 @@ public class HttpClientUtils {
 	
 	
 	//统一发送方法，返回日志，用来生成报告
-	public static ResponseResult sendRequest(InterTestCase t,Evn evn,Map<String,String> context,InterTestCaseLog testCaseLog) {
+	public static ResponseResult sendRequest(InterfaceTestCase t,Evn evn,Map<String,String> context,InterfaceTestCaseLog testCaseLog) {
 		ResponseResult result = new ResponseResult();
 		String reqMethod = t.getRequestMethod();
 		
 		//1.解析json字符串  把json中的$<>变量替换  最后解析成map
 		Map<String,String> request_header = t.toMap(Parse.parse(t.getRequestHeader(), context).get("result"));
-		Map<String,String> default_parame = t.toMap(Parse.parse(t.getDefaultParam(), context).get("result"));
+		Map<String,String> default_parame = t.toMap(Parse.parse(t.getInParam(), context).get("result"));
 		//入参替换 保留 在测试平台的时候 因为接口和用例是分开的
 		//Map<String,String> default_parame = t.toMap(t.parse(t.getDefaultParame(), context));
 		if(request_header!=null) {
@@ -375,7 +375,12 @@ public class HttpClientUtils {
 			}
 			break;
 		case "post":
-			
+			try {
+				result = doPost(evn.getIp()+""+t.getRequestPath(),default_parame,request_header);
+			} catch (Exception e) {
+				e.printStackTrace();
+				result = new ResponseResult(404, e.toString());
+			}
 			break;
 		default:
 			break;

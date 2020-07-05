@@ -18,13 +18,13 @@ import lombok.experimental.Accessors;
 import lombok.experimental.UtilityClass;
 
 @Data
-public class InterTestCase {
-
-	@ExcelProperty("模块名称")
-	private String module;
+public class InterfaceTestCase {
 
 	@ExcelProperty("用例名称")
-	private String interName;
+	private String module;
+
+	@ExcelProperty("接口名称")
+	private String interfaceName;
 
 	@ExcelProperty("请求类型")
 	private String requestType;
@@ -40,9 +40,6 @@ public class InterTestCase {
 
 	@ExcelProperty("请求头")
 	private String requestHeader;
-
-	@ExcelProperty("默认参数")
-	private String defaultParam;
 
 	@ExcelProperty("输入参数")
 	private String inParam;
@@ -68,7 +65,7 @@ public class InterTestCase {
 	}
 
 	public static void main(String[] args) {
-		InterTestCase t = new InterTestCase();
+		InterfaceTestCase t = new InterfaceTestCase();
 		String str = "{\"0\":\"zhangsan\",\"1\":\"lisi\",\"2\":\"wangwu\",\"3\":[{\"0\":\"chenliu\",\"1\":\"zhouliu\"},{\"0\":\"sunqi\",\"1\":\"zhouba\"}]}";
 		String str1 = null;
 		System.out.println(t.toMap(str1));

@@ -20,11 +20,11 @@ import com.autotest.utils.ObjectLibListener;
 import com.autotest.utils.ObjectLibUtils;
 import com.autotest.utils.SeleniumUtils;
 import com.autotest.utils.UITestCaseListener;
-import com.autotest.beans.InterTestCaseLog;
+import com.autotest.beans.InterfaceTestCaseLog;
 import com.autotest.beans.ObjectLib;
 
-public class UIExcuteEngine {
-	private static final Logger logger = LoggerFactory.getLogger(UIExcuteEngine.class);
+public class UIExcute {
+	private static final Logger logger = LoggerFactory.getLogger(UIExcute.class);
 	// 保存全局变量
 	public Map<String, String> context = new HashMap<String, String>();
 
@@ -152,6 +152,6 @@ public class UIExcuteEngine {
 	}
 
 	public static void main(String[] args) {
-		UIExcuteEngine.run();
+		UIExcute.run();
 	}
 }

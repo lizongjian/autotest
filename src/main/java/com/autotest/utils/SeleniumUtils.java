@@ -26,6 +26,7 @@ import com.autotest.common.Parse;
 public class SeleniumUtils {
 
 	static WebDriver driver = null;
+	//执行结果返回值
 	static Map<String, String> result = null;
 
 	public static Map<String, String> execute(UITestCase uiTestCase, Evn evn, ObjectLib object,
@@ -47,6 +48,9 @@ public class SeleniumUtils {
 		case "getAttr":
 			result = getAttr(element, inParam, outParam);
 			break;
+		case "getText":
+			result = getText(element, inParam, outParam);
+			break;
 		case "wait":
 			result = wait(inParam);
 			break;
@@ -57,6 +61,7 @@ public class SeleniumUtils {
 		return result;
 	}
 
+	
 	private static Map<String, String> wait(String inParam) {
 		Map<String, String> result = new HashMap<String, String>();
 		try {
@@ -71,6 +76,7 @@ public class SeleniumUtils {
 
 	// 通过定位方式和定位值获取对象
 	public static WebElement getElement(ObjectLib o, String inParam) {
+		Map<String,Object> result = new HashMap<String, Object>();
 		WebElement element = null;
 		if (o != null) {
 			String locateType = o.getLocateType();
@@ -177,6 +183,18 @@ public class SeleniumUtils {
 		Map<String, String> result = new HashMap<String, String>();
 		try {
 			String value = element.getAttribute(inParam);
+			result.put(outParam, value);
+		} catch (Exception e) {
+			e.printStackTrace();
+			result.put("error", e.getStackTrace().toString());
+		}
+		return result;
+	}
+	
+	public static Map<String, String> getText(WebElement element, String inParam, String outParam) {
+		Map<String, String> result = new HashMap<String, String>();
+		try {
+			String value = element.getText();
 			result.put(outParam, value);
 		} catch (Exception e) {
 			e.printStackTrace();

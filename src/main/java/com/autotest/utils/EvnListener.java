@@ -11,6 +11,7 @@ public class EvnListener extends AnalysisEventListener<Evn> {
 	public static Evn evn = new Evn();
 	
 	public void doAfterAllAnalysed(AnalysisContext arg0) {
+		System.out.println(evn);
 	}
 
 	public void invoke(Evn e, AnalysisContext context) {
@@ -22,7 +23,7 @@ public class EvnListener extends AnalysisEventListener<Evn> {
 	
 	public static void main(String[] args) {
 		// 1.读取环境
-		EasyExcel.read("F:\\workspace\\autotest\\autotest\\case\\UI.xlsx", Evn.class, new EvnListener()).sheet("全局配置信息").doRead();
+		EasyExcel.read("F:\\workspace\\autotest\\autotest\\case\\inter_v2.xlsx", Evn.class, new EvnListener()).sheet("全局配置信息").doRead();
 	}
 
 }

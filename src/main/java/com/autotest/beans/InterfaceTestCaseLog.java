@@ -9,11 +9,11 @@ import com.alibaba.excel.annotation.ExcelProperty;
 import lombok.Data;
 
 @Data
-public class InterTestCaseLog {
-	@ExcelProperty("模块")
+public class InterfaceTestCaseLog {
+	@ExcelProperty("用例名称")
 	public String module;
 	@ExcelProperty("接口名称")
-	public String interName;
+	public String interfaceName;
 	@ExcelProperty("请求方法")
 	public String requestMethod;
 	@ExcelProperty("请求头")
@@ -30,15 +30,15 @@ public class InterTestCaseLog {
 	public String status;
 
 	public static void main(String[] args) {
-		List<InterTestCaseLog> l = new ArrayList<InterTestCaseLog>();
-		InterTestCaseLog t = new InterTestCaseLog();
+		List<InterfaceTestCaseLog> l = new ArrayList<InterfaceTestCaseLog>();
+		InterfaceTestCaseLog t = new InterfaceTestCaseLog();
 		t.setModule("查询全宗");
-		t.setInterName("登录");
+		t.setInterfaceName("登录");
 		t.setRequestHeader("{'a':'b'}");
 		t.setRequestMethod("get");
 		t.setRequestPath("http://wwww.baidu.com");
 		l.add(t);
 		String fileName = "C:\\Users\\zonja\\Desktop\\123.xlsx";
-		EasyExcel.write(fileName, InterTestCaseLog.class).sheet("测试报告").doWrite(l);
+		EasyExcel.write(fileName, InterfaceTestCaseLog.class).sheet("测试报告").doWrite(l);
 	}
 }
