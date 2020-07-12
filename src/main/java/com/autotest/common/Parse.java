@@ -5,6 +5,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.autotest.utils.ExceptionToStringUtils;
+
 public class Parse {
 	
 	// 解析输入参数 
@@ -28,7 +30,7 @@ public class Parse {
 				result.put("result", str);
 			} catch (Exception e) {
 				e.printStackTrace();
-				result.put("error", e.getStackTrace().toString());
+				result.put("error",ExceptionToStringUtils.get(e));
 			}
 			// 2.从context获取值
 			// 3.正则替换
@@ -60,5 +62,11 @@ public class Parse {
 		}
 		return str;
 	}
-
+	
+	
+	public static void main(String[] args) {
+		Map<String,String> m = new HashMap<String, String>();
+		m.put("a", "lizj");
+		System.out.println(Parse.parse("{\"auth\":\"$<aa>\"}", m));
+	}
 }

@@ -71,9 +71,9 @@ public class InterfaceExcute {
 		for(int i=0;i<=testCase.size()-1;i++) {
 			InterfaceTestCaseLog testCaseLog = new InterfaceTestCaseLog();
 			InterfaceTestCase t = testCase.get(i);
-			testCaseLog.setModule(t.getModule());
-			testCaseLog.setInterfaceName(t.getInterfaceName());
-			testCaseLog.setRequestMethod(t.getRequestMethod());
+			testCaseLog.setModule(t.getModule());//记录用例名称
+			testCaseLog.setInterfaceName(t.getInterfaceName());//记录接口名称
+			testCaseLog.setRequestMethod(t.getRequestMethod());//记录请求方法
 			//1.发请求
 			ResponseResult respResult = HttpClientUtils.sendRequest(t,evn,context,testCaseLog);
 			logger.info(respResult.toString());
@@ -98,15 +98,23 @@ public class InterfaceExcute {
 			if(out_check!=null) {
 				for (Map.Entry<String,String> oc : out_check.entrySet()) {
 					//期望值
-					String expect = JsonPath.read(respResult.getContent(), oc.getKey());
-					//actual
-					Map<String, String> actual = Parse.parse(oc.getValue(), context);
-					if(expect.equals(actual.get("result"))) {
-						testCaseLog.setCheck(expect+""+actual);
-						System.out.println("预期"+expect+"----"+"实际"+actual);
-						testCaseLog.setStatus("success");
-					}else {
+					String expect = "";
+					try {
+						expect = JsonPath.read(respResult.getContent(), oc.getKey());
+						//实际值
+						Map<String, String> actual = Parse.parse(oc.getValue(), context);
+						if(expect.equals(actual.get("result"))) {
+							testCaseLog.setCheck(expect+""+actual);
+							System.out.println("预期"+expect+"----"+"实际"+actual);
+							testCaseLog.setStatus("success");
+						}else {
+							testCaseLog.setStatus("fail");
+							testCaseLog.setStatusMes("实际值与期望值不相等：实际值为【"+actual+"】"+"期望值为【"+expect+"】");
+						}
+					} catch (Exception e) {
 						testCaseLog.setStatus("fail");
+						testCaseLog.setStatusMes("获取实际值或期望值失败："+e.getMessage());
+						e.printStackTrace();
 					}
 				}
 			}

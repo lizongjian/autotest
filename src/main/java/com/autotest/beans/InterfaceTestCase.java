@@ -68,7 +68,7 @@ public class InterfaceTestCase {
 		InterfaceTestCase t = new InterfaceTestCase();
 		String str = "{\"0\":\"zhangsan\",\"1\":\"lisi\",\"2\":\"wangwu\",\"3\":[{\"0\":\"chenliu\",\"1\":\"zhouliu\"},{\"0\":\"sunqi\",\"1\":\"zhouba\"}]}";
 		String str1 = null;
-		System.out.println(t.toMap(str1));
+		System.out.println(t.toMap(str));
 
 		String s = JsonPath.parse(str).set("$.3[1].0", "jiba").jsonString();
 		String s1 = JsonPath.parse(str).read("$.3[1].0");

@@ -19,9 +19,11 @@ import com.autotest.utils.EvnListener;
 import com.autotest.utils.ObjectLibListener;
 import com.autotest.utils.ObjectLibUtils;
 import com.autotest.utils.SeleniumUtils;
+import com.autotest.utils.UICaseListener;
 import com.autotest.utils.UITestCaseListener;
 import com.autotest.beans.InterfaceTestCaseLog;
 import com.autotest.beans.ObjectLib;
+import com.autotest.beans.UICase;
 
 public class UIExcute {
 	private static final Logger logger = LoggerFactory.getLogger(UIExcute.class);
@@ -37,10 +39,13 @@ public class UIExcute {
 	public static void run() {
 		// 1.读取环境
 		EasyExcel.read("F:\\workspace\\autotest\\autotest\\case\\UI.xlsx", Evn.class, new EvnListener()).sheet("全局配置信息").doRead();
-		// 2.读取用例
-		EasyExcel.read("F:\\workspace\\autotest\\autotest\\case\\UI.xlsx", UITestCase.class, new UITestCaseListener()).sheet("测试用例")
+		// 2.读取组件库
+		EasyExcel.read("F:\\workspace\\autotest\\autotest\\case\\UI.xlsx", UICase.class, new UICaseListener()).sheet("组件库")
 				.doRead();
-		// 3.读取对象库
+		// 3.读取用例
+				EasyExcel.read("F:\\workspace\\autotest\\autotest\\case\\UI.xlsx", UITestCase.class, new UITestCaseListener()).sheet("测试用例")
+						.doRead();
+		// 43.读取对象库
 		EasyExcel.read("F:\\workspace\\autotest\\autotest\\case\\UI.xlsx", ObjectLib.class, new ObjectLibListener()).sheet("对象库")
 				.doRead();
 		//环境信息

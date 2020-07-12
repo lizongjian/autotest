@@ -352,18 +352,18 @@ public class HttpClientUtils {
 		ResponseResult result = new ResponseResult();
 		String reqMethod = t.getRequestMethod();
 		
-		//1.解析json字符串  把json中的$<>变量替换  最后解析成map
+		//1.解析json字符串  把json中的$<>变量替换  最后解析成map 
 		Map<String,String> request_header = t.toMap(Parse.parse(t.getRequestHeader(), context).get("result"));
 		Map<String,String> default_parame = t.toMap(Parse.parse(t.getInParam(), context).get("result"));
 		//入参替换 保留 在测试平台的时候 因为接口和用例是分开的
 		//Map<String,String> default_parame = t.toMap(t.parse(t.getDefaultParame(), context));
 		if(request_header!=null) {
-			testCaseLog.setRequestHeader(request_header.toString());
+			testCaseLog.setRequestHeader(request_header.toString());//记录请求头
 		}
 		if(default_parame!=null) {
-			testCaseLog.setDefaultParame(default_parame.toString());
+			testCaseLog.setDefaultParame(default_parame.toString());//记录解析后的默认参数
 		}
-		testCaseLog.setRequestPath(evn.getIp()+""+t.getRequestPath());
+		testCaseLog.setRequestPath(evn.getIp()+""+t.getRequestPath());//记录请求路径
 		
 		switch (reqMethod) {
 		case "get":
@@ -371,7 +371,7 @@ public class HttpClientUtils {
 				result = doGet(evn.getIp()+""+t.getRequestPath(),default_parame,request_header);
 			} catch (Exception e) {
 				e.printStackTrace();
-				result = new ResponseResult(404, e.toString());
+				result = new ResponseResult(404, ExceptionToStringUtils.get(e));
 			}
 			break;
 		case "post":
@@ -379,7 +379,7 @@ public class HttpClientUtils {
 				result = doPost(evn.getIp()+""+t.getRequestPath(),default_parame,request_header);
 			} catch (Exception e) {
 				e.printStackTrace();
-				result = new ResponseResult(404, e.toString());
+				result = new ResponseResult(404,ExceptionToStringUtils.get(e));
 			}
 			break;
 		default:

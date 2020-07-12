@@ -28,7 +28,8 @@ public class InterfaceTestCaseLog {
 	public String check;
 	@ExcelProperty("状态")
 	public String status;
-
+	@ExcelProperty("状态信息")
+	private String statusMes;
 	public static void main(String[] args) {
 		List<InterfaceTestCaseLog> l = new ArrayList<InterfaceTestCaseLog>();
 		InterfaceTestCaseLog t = new InterfaceTestCaseLog();
