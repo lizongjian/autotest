@@ -38,21 +38,18 @@ public class UIExcute {
 
 	public static void run() {
 		// 1.读取环境
-		EasyExcel.read("F:\\workspace\\autotest\\autotest\\case\\UI.xlsx", Evn.class, new EvnListener()).sheet("全局配置信息").doRead();
+		EasyExcel.read("case\\UI.xlsx", Evn.class, new EvnListener()).sheet("全局配置信息").doRead();
 		// 2.读取组件库
-		EasyExcel.read("F:\\workspace\\autotest\\autotest\\case\\UI.xlsx", UICase.class, new UICaseListener()).sheet("组件库")
-				.doRead();
+		EasyExcel.read("case\\UI.xlsx", UICase.class, new UICaseListener()).sheet("组件库").doRead();
 		// 3.读取用例
-				EasyExcel.read("F:\\workspace\\autotest\\autotest\\case\\UI.xlsx", UITestCase.class, new UITestCaseListener()).sheet("测试用例")
-						.doRead();
+		EasyExcel.read("case\\UI.xlsx", UITestCase.class, new UITestCaseListener()).sheet("测试用例").doRead();
 		// 43.读取对象库
-		EasyExcel.read("F:\\workspace\\autotest\\autotest\\case\\UI.xlsx", ObjectLib.class, new ObjectLibListener()).sheet("对象库")
-				.doRead();
-		//环境信息
+		EasyExcel.read("case\\UI.xlsx", ObjectLib.class, new ObjectLibListener()).sheet("对象库").doRead();
+		// 环境信息
 		Evn evn = EvnListener.evn;
-		//ui用例
+		// ui用例
 		List<Map<String, List<UITestCase>>> uiTestCases = UITestCaseListener.uiTestCases;
-		//对象库
+		// 对象库
 		List<Map<String, ObjectLib>> objectLib = ObjectLibListener.objectLib;
 
 		// 3.遍历所有用例
@@ -67,7 +64,7 @@ public class UIExcute {
 		// 生成测试报告
 		EasyExcel
 				.write(System.getProperty("user.dir") + File.separator + "report" + File.separator
-						+System.currentTimeMillis() + ".xlsx", UITestCaseLog.class)
+						+ System.currentTimeMillis() + ".xlsx", UITestCaseLog.class)
 				.sheet("测试报告").doWrite(uiTestCaseLogsList);
 	}
 
@@ -79,17 +76,17 @@ public class UIExcute {
 
 		// 步骤:
 		start: for (int i = 0; i <= testCase.size() - 1; i++) {
-			
+
 			UITestCase uiTestCase = testCase.get(i);
 			UITestCaseLog uiTestCaseLog = new UITestCaseLog();
 			uiTestCaseLog.setModule(uiTestCase.getModule());
 			uiTestCaseLog.setKeyword(uiTestCase.getKeyword());
 			String objectName = uiTestCase.getObjectName();
 			uiTestCaseLog.setObject(uiTestCase.getObjectName());
-			
+
 			// 输入参数解析
 			String inParam = uiTestCase.getInParam();
-			if(null != inParam) {
+			if (null != inParam) {
 				Map<String, String> inmap = Parse.parse(inParam, context);
 				for (Map.Entry<String, String> in : inmap.entrySet()) {
 					String inKey = in.getKey();
@@ -106,12 +103,14 @@ public class UIExcute {
 					}
 				}
 			}
-			
+
 			// 对象解析
 			ObjectLib object = null;
 			if (null != objectName && null != inParam) {
-				Map<String,Object> result = ObjectLibUtils.getObject(objectName,objectLib,inParam);
-				for (Map.Entry<String,Object> obj : result.entrySet()) {
+				// 里面已经解析了
+				Map<String, Object> result = ObjectLibUtils.getObject(objectName, objectLib, inParam);
+				// 有入参的时候才解析
+				for (Map.Entry<String, Object> obj : result.entrySet()) {
 					String inKey = obj.getKey();
 					if ("result".equals(inKey)) {// 解析成功结果集
 						object = (ObjectLib) obj.getValue();
@@ -125,7 +124,16 @@ public class UIExcute {
 						break start;
 					}
 				}
-				
+				if (object == null) {
+					uiTestCaseLog.setStatus("fail");
+					uiTestCaseLog.setStatusMes("找不到【" + objectName + "】该对象!请检查对象库");
+					uiTestCaseLogsList.add(uiTestCaseLog);
+					// 对象找不到 就跳出本次的用例执行 执行下一个用例
+					break start;
+				}
+			} else if (null != objectName) {
+				Map<String, Object> result = ObjectLibUtils.getObject(objectName, objectLib);
+				object = (ObjectLib) result.get("result");
 				if (object == null) {
 					uiTestCaseLog.setStatus("fail");
 					uiTestCaseLog.setStatusMes("找不到【" + objectName + "】该对象!请检查对象库");
@@ -134,7 +142,7 @@ public class UIExcute {
 					break start;
 				}
 			}
-			
+
 			// 正式执行
 			Map<String, String> result = SeleniumUtils.execute(uiTestCase, evn, object, context, uiTestCaseLog);
 			if (!result.isEmpty()) {// 正常处理解析成功

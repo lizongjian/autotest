@@ -45,6 +45,6 @@ public class InterfaceCaseListener extends AnalysisEventListener<InterfaceCase> 
 	}
 	
 	public static void main(String[] args) {
-		EasyExcel.read("F:\\workspace\\autotest\\autotest\\case\\inter_v2.xlsx", InterfaceCase.class, new InterfaceCaseListener()).sheet("测试用例").doRead();
+		EasyExcel.read("case\\interface.xlsx", InterfaceCase.class, new InterfaceCaseListener()).sheet("测试用例").doRead();
 	}
 }

@@ -44,7 +44,7 @@ public class UICaseListener extends AnalysisEventListener<UICase>{
 	
 	
 	public static void main(String[] args) {
-		EasyExcel.read("F:\\workspace\\autotest\\autotest\\case\\UI.xlsx", UICase.class, new UICaseListener()).sheet("组件库")
+		EasyExcel.read("case\\UI.xlsx", UICase.class, new UICaseListener()).sheet("组件库")
 				.doRead();
 	}
 }

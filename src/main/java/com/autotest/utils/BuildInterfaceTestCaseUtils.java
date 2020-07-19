@@ -73,9 +73,9 @@ public class BuildInterfaceTestCaseUtils {
 	
 	
 	public static void main(String[] args) {
-		EasyExcel.read("F:\\workspace\\autotest\\autotest\\case\\inter_v2.xlsx", Interface.class, new InterfaceListener()).sheet("接口信息").doRead();
+		EasyExcel.read("case\\inter_v2.xlsx", Interface.class, new InterfaceListener()).sheet("接口信息").doRead();
 		// 3.读取测试用例
-		EasyExcel.read("F:\\workspace\\autotest\\autotest\\case\\inter_v2.xlsx", InterfaceCase.class, new InterfaceCaseListener()).sheet("测试用例").doRead();
+		EasyExcel.read("case\\inter_v2.xlsx", InterfaceCase.class, new InterfaceCaseListener()).sheet("测试用例").doRead();
 	
 		System.out.println(BuildInterfaceTestCaseUtils.build(InterfaceListener.interfaces, InterfaceCaseListener.interfaceCases));
 	}

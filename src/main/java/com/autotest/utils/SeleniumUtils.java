@@ -171,6 +171,7 @@ public class SeleniumUtils {
 	public static Map<String, String> input(WebElement element, String inParam) {
 		Map<String, String> result = new HashMap<String, String>();
 		try {
+			element.clear();
 			element.sendKeys(inParam);
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -44,7 +44,7 @@ public class InterTestCaseListener extends AnalysisEventListener<InterfaceTestCa
 
 	public static void main(String[] args) {
 		//映射	@ExcelProperty("out_check") 都相同了，没有注意到，因为是复制粘贴的，多个一样，就是null了
-		EasyExcel.read("C:\\Users\\zonja\\Desktop\\interface.xlsx", InterfaceTestCase.class, new InterTestCaseListener()).sheet().doRead();
+		EasyExcel.read("case\\interface.xlsx", InterfaceTestCase.class, new InterTestCaseListener()).sheet().doRead();
 		List<Map<String, List<InterfaceTestCase>>> l = InterTestCaseListener.testCases;
 //		int i = 0;
 //		for(Map.Entry<String, List<TestCase>> m : map.entrySet()) {

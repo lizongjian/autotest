@@ -100,10 +100,10 @@ public class UITestCaseListener extends AnalysisEventListener<UITestCase> {
 	}
 
 	public static void main(String[] args) {
-		EasyExcel.read("F:\\workspace\\autotest\\autotest\\case\\UI.xlsx", UICase.class, new UICaseListener())
+		EasyExcel.read("case\\UI.xlsx", UICase.class, new UICaseListener())
 		.sheet("组件库").doRead();
 		// 2.读取用例
-		EasyExcel.read("F:\\workspace\\autotest\\autotest\\case\\UI.xlsx", UITestCase.class, new UITestCaseListener())
+		EasyExcel.read("case\\UI.xlsx", UITestCase.class, new UITestCaseListener())
 				.sheet("测试用例").doRead();
 	}
 }

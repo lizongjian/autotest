@@ -38,13 +38,13 @@ public class InterfaceExcute {
 
 	public static void run() {
 		// 1.读取环境
-		EasyExcel.read("F:\\workspace\\autotest\\autotest\\case\\inter_v2.xlsx", Evn.class, new EvnListener())
+		EasyExcel.read("case\\interface.xlsx", Evn.class, new EvnListener())
 				.sheet("全局配置信息").doRead();
 		// 2.读取接口信息
-		EasyExcel.read("F:\\workspace\\autotest\\autotest\\case\\inter_v2.xlsx", Interface.class,
+		EasyExcel.read("case\\interface.xlsx", Interface.class,
 				new InterfaceListener()).sheet("接口信息").doRead();
 		// 3.读取测试用例
-		EasyExcel.read("F:\\workspace\\autotest\\autotest\\case\\inter_v2.xlsx", InterfaceCase.class,
+		EasyExcel.read("case\\interface.xlsx", InterfaceCase.class,
 				new InterfaceCaseListener()).sheet("测试用例").doRead();
 		// 4.拼装成可执行用例对象 InterfaceTestCase
 
