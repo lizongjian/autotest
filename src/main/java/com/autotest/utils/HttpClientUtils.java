@@ -376,7 +376,7 @@ public class HttpClientUtils {
 			break;
 		case "post":
 			try {
-				result = doPost(evn.getIp()+""+t.getRequestPath(),default_parame,request_header);
+				result = doPost(evn.getIp()+""+t.getRequestPath(),request_header,default_parame);
 			} catch (Exception e) {
 				e.printStackTrace();
 				result = new ResponseResult(404,ExceptionToStringUtils.get(e));
