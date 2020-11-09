@@ -9,12 +9,12 @@ public class App {
  
     public static void main(String[] args) throws Exception {
  
-        System.out.println("start log4j Socket Server  Port 5000");
- 
-        String[] argss = { "5000", "src/log4j.properties" };
- 
-        SimpleSocketServer.main(argss);
- 
-        log.info("succ");
+//        System.out.println("start log4j Socket Server  Port 5000");
+// 
+//        String[] argss = { "5000", "src/log4j.properties" };
+// 
+//        SimpleSocketServer.main(argss);
+// 
+//        log.info("succ");
     }    
 }
