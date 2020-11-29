@@ -16,5 +16,15 @@ public class App {
 //        SimpleSocketServer.main(argss);
 // 
 //        log.info("succ");
-    }    
+    	System.out.println(toBinary(10));
+    }   
+    
+    public static String toBinary(int num) {// num = 10 
+            String str = "";
+            while (num != 0) {
+                str = num % 2 + str;//给定的数循环除以2，直到商为0或者1为止 将每一步除的结果的余数记录下来 第一位 0 
+                num = num / 2; //不断除2 
+            }
+            return str;
+        }
 }
